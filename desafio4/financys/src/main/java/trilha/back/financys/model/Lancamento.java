@@ -16,14 +16,16 @@ public class Lancamento extends BaseDados implements Serializable {
     private String date;
     @Column(nullable = false)
     private boolean paid;
-    @Column(nullable = false)
-    private Long categoryId;
+
+    @ManyToOne
+    @JoinColumn(name="lancamento")
+    private Categoria categoryId;
 
     //Construtor Vazio
     public Lancamento() { }
     //Construtor Completo
-    public Lancamento(Long id, String name, String description,String type, String amount, String date, boolean paid, Long categoryId) {
-        setId(id);
+    public Lancamento(String name, String description,String type,
+                      String amount, String date, boolean paid, Categoria categoryId) {
         setName(name);
         setDescription(description);
         this.type = type;
@@ -57,10 +59,10 @@ public class Lancamento extends BaseDados implements Serializable {
     public void setPaid(boolean paid) {
         this.paid = paid;
     }
-    public Long getCategoryId() {
+    public Categoria getCategoryId() {
         return categoryId;
     }
-    public void setCategoryId(Long categoryId){
+    public void setCategoryId(Categoria categoryId){
         this.categoryId = categoryId;
     }
     @Override
