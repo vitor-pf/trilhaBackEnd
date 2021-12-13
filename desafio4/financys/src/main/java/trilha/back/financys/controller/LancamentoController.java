@@ -1,50 +1,47 @@
 package trilha.back.financys.controller;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import trilha.back.financys.model.Lancamento;
 import trilha.back.financys.repository.LancamentoRepository;
-
 import java.util.List;
 import java.util.Optional;
 
-
-@RestController
+@Controller
 @RequestMapping(value = "/lancamentos", produces="application/json")
 @CrossOrigin(origins = "*")
 public class LancamentoController {
     @Autowired
     private LancamentoRepository lancamentoRepository;
 
-    @PostMapping("/criar") //lancamento
-    public ResponseEntity<Lancamento> lancamentoSalva(@RequestBody Lancamento B) {
+    @PostMapping("/")
+    public ResponseEntity<Lancamento> lancamentoSalva(@RequestBody Lancamento body) {
         var lancamento = new Lancamento(
-                B.getName(),B.getDescription(),B.getType(),
-                B.getAmount(),B.getDate(),B.getPaid(),B.getCategoryId());
+                body.getName(),body.getDescription(),body.getType(),
+                body.getAmount(),body.getDate(),body.getPaid(),body.getCategoryId());
         lancamentoRepository.save(lancamento);
+        System.out.println(body.getCategoryId());
         return ResponseEntity.ok(lancamento);
     }
-    @GetMapping("/ler") //lancamento
+    @GetMapping("/")
     public ResponseEntity<List<Lancamento>> lancamentoLista() {
-        List idd = lancamentoRepository.findAll();
-        return ResponseEntity.ok(idd);
+        return ResponseEntity.ok(lancamentoRepository.findAll());
     }
-    @GetMapping("/ler/{id}") //lancamento
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<Lancamento>> lancamentoUnica(@PathVariable Long id) {
-        Optional idd = lancamentoRepository.findById(id);
-        return ResponseEntity.ok(idd);
+        return ResponseEntity.ok(lancamentoRepository.findById(id));
     }
-    @PutMapping("/alterar/{id}")
-    public ResponseEntity<Lancamento> lancamentoAlterar(@PathVariable Long id, @RequestBody Lancamento lancamentoBody){
+    @PutMapping("/{id}")
+    public ResponseEntity<Lancamento> lancamentoAlterar(@PathVariable Long id, @RequestBody Lancamento body){
         var aux = lancamentoRepository.findById(id).get();
-        BeanUtils.copyProperties(lancamentoBody,aux,"id");
+        BeanUtils.copyProperties(body,aux,"id");
         lancamentoRepository.save(aux);
-        return ResponseEntity.ok(lancamentoBody);
+        return ResponseEntity.ok(body);
     }
-    @DeleteMapping("/deletar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> lancamentoDeletar(@PathVariable Long id){
         lancamentoRepository.deleteById(id);
         return new ResponseEntity<> (HttpStatus.OK);
