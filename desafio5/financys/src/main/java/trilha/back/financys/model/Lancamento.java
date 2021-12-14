@@ -1,13 +1,18 @@
 package trilha.back.financys.model;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "lancamento")
-public class Lancamento extends BaseDados implements Serializable {
+public class Lancamento implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
+    private String description;
     @Column(nullable = false)
     private String type;
     @Column(nullable = false)
@@ -18,22 +23,40 @@ public class Lancamento extends BaseDados implements Serializable {
     private boolean paid;
 
     @ManyToOne
-    private Categoria categoryId;
+    private Categoria category;
 
     //Construtor Vazio
     public Lancamento() { }
     //Construtor Completo
     public Lancamento(String name, String description,String type,
-                      String amount, String date, boolean paid, Categoria categoryId) {
-        setName(name);
-        setDescription(description);
+                      String amount, String date, boolean paid, Categoria category) {
+        this.name = name;
+        this.description = description;
         this.type = type;
         this.amount = amount;
         this.date = date;
         this.paid = paid;
-        this.categoryId = categoryId;
+        this.category = category;
     }
 
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
     public String getType() {
         return type;
     }
@@ -58,12 +81,13 @@ public class Lancamento extends BaseDados implements Serializable {
     public void setPaid(boolean paid) {
         this.paid = paid;
     }
-    public Categoria getCategoryId() {
-        return categoryId;
+    public Categoria getCategory() {
+        return category;
     }
-    public void setCategoryId(Categoria categoryId){
-        this.categoryId = categoryId;
+    public void setCategory(Categoria category) {
+        this.category = category;
     }
+
     @Override
     public String toString(){
         return "Id: "+getId()
@@ -73,6 +97,6 @@ public class Lancamento extends BaseDados implements Serializable {
                 +",\nAmount: "+getAmount()
                 +",\nDate: "+getDate()
                 + ",\nPaid: "+getPaid()
-                +",\nCategoryId: "+getCategoryId();
+                +",\nCategoryId: "+getCategory();
     }
 }
