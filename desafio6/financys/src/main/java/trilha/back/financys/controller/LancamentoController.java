@@ -20,6 +20,7 @@ import java.util.List;
 public class LancamentoController {
     @Autowired
     private LancamentoService lancamentoService;
+    
 
     @GetMapping("/graficoTeste")
     public ResponseEntity<?> graficoTeste() {
