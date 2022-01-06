@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import trilha.back.financys.dtos.LancamentoDTO;
 import trilha.back.financys.entity.LancamentoEntity;
-import trilha.back.financys.mappers.LancamentoMapper;
 import trilha.back.financys.service.LancamentoService;
 
 import javax.validation.Valid;
@@ -16,37 +15,36 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/lancamentos", produces="application/json")
+@RequestMapping(value = "/v1/lancamentos", produces="application/json")
 @CrossOrigin(origins = "*")
 public class LancamentoController {
     @Autowired
     private LancamentoService lancamentoService;
-    private final LancamentoMapper mapper;
 
-    @GetMapping("/graficoTeste")
+    @GetMapping("/grafico")
     public ResponseEntity<?> graficoTeste() {
         return ResponseEntity.status(HttpStatus.OK).body(lancamentoService.grafico());
     }
-    @PostMapping("/")
+    @PostMapping("/create")
     public ResponseEntity<LancamentoDTO> create(@RequestBody @Valid LancamentoEntity body,
                                                          BindingResult result) {
-        return lancamentoService.create(body, result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoService.create(body,result));
     }
-    @GetMapping("/")
+    @GetMapping("/readAll")
     public ResponseEntity<List<LancamentoDTO>> readAll() {
-        return lancamentoService.readAll();
+        return ResponseEntity.status(HttpStatus.OK).body(lancamentoService.readAll());
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<LancamentoDTO> lancamentoUnica(@PathVariable Long id) {
-        return lancamentoService.readById(id);
+    @GetMapping("/readById/{id}")
+    public ResponseEntity<LancamentoDTO> readById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(lancamentoService.readById(id));
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<LancamentoDTO> lancamentoAlterar(@PathVariable Long id, @RequestBody @Valid LancamentoEntity body){
-        return lancamentoService.update(id, body);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<LancamentoDTO> update(@PathVariable Long id, @RequestBody @Valid LancamentoEntity body){
+        return ResponseEntity.status(HttpStatus.OK).body(lancamentoService.update(id, body));
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> lancamentoDeletar(@PathVariable Long id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         lancamentoService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

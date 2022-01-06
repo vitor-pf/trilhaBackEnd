@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import trilha.back.financys.dtos.ChartDTO;
@@ -39,7 +37,7 @@ public class LancamentoService {
         }
         return false;
     }
-    public List<ChartDTO> grafico() {
+    public List<ChartDTO> graficoF() {
         List<ChartDTO> lists= new ArrayList<ChartDTO>();
         List<CategoriaEntity> categoriaEntities = categoriaRepository.findAll();
 
@@ -54,31 +52,41 @@ public class LancamentoService {
         }
         return lists;
     }
-    public List<?> graficoTeste() {
-        return lancamentoRepository.findAll().stream().collect(Collectors.toList());
+    public List<?> grafico() {
+        List<ChartDTO> lists= new ArrayList<ChartDTO>();
+        categoriaRepository.findAll()
+                .stream()
+                .forEach(categoriaEntity->{
+                    ChartDTO chartDTO = new ChartDTO();
+                    chartDTO.setName(categoriaEntity.getNameCategoria());
+                    chartDTO.setTotal(0.0);
+                    categoriaEntity.getLancamentoEntity()
+                            .forEach(lan-> chartDTO.setTotal(lan.getAmount()+chartDTO.getTotal()));
+                    lists.add(chartDTO);
+                });
+        return lists;
     }
 
-    public ResponseEntity<LancamentoDTO> create(LancamentoEntity body, BindingResult result){
+    public LancamentoDTO create(LancamentoEntity body, BindingResult result){
         if(validateCategoryById(body.getCategory().getId()) && (!result.hasErrors())){
-            return ResponseEntity.status(HttpStatus.OK).body(maptoEntity(lancamentoRepository.save(body)));
+            return maptoEntity(lancamentoRepository.save(body));
         }
-        return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
+        return null;
     }
 
-    public ResponseEntity<List<LancamentoDTO>> readAll(){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(maptoListEntity(lancamentoRepository.findAll()));
+    public List<LancamentoDTO> readAll(){
+        return maptoListEntity(lancamentoRepository.findAll());
     }
 
-    public ResponseEntity<LancamentoDTO> readById(long id){
-        return ResponseEntity.status(HttpStatus.OK).body(maptoEntity(lancamentoRepository.findById(id).get()));
+    public LancamentoDTO readById(long id){
+        return maptoEntity(lancamentoRepository.findById(id).get());
     }
 
-    public ResponseEntity<LancamentoDTO> update(Long id, LancamentoEntity body){
-        if (Objects.equals(body.getId(), lancamentoRepository.getById(id).getId()) ) {
-            return ResponseEntity.status(HttpStatus.OK).body(maptoEntity(lancamentoRepository.save(body)));
+    public LancamentoDTO update(Long id, LancamentoEntity body){
+        if (Objects.equals(body.getId(), lancamentoRepository.findById(id).get().getId()) ) {
+            return maptoEntity(lancamentoRepository.save(body));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(maptoEntity(body));
+        return null;
     }
 
     public void deleteById(long id){

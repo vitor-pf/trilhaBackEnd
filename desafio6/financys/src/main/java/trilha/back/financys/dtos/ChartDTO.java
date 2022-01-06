@@ -1,10 +1,9 @@
 package trilha.back.financys.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class ChartDTO {
     private String name;
     private Double total;
+
+
 }
