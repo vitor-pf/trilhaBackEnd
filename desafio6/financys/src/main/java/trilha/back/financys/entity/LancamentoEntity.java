@@ -49,5 +49,4 @@ public class LancamentoEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "category", referencedColumnName = "id")
     private CategoriaEntity category;
-
 }

@@ -19,6 +19,4 @@ public class LancamentoDTO {
     private String date;
     private boolean paid;
     private CategoriaEntity category;
-
-
-}
+  }
