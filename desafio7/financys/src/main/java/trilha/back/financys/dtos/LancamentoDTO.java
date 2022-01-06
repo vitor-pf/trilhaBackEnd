@@ -12,7 +12,6 @@ import trilha.back.financys.entity.CategoriaEntity;
 @Builder
 public class LancamentoDTO {
 
-
     private String name;
     private String description;
     private String type;
@@ -20,12 +19,6 @@ public class LancamentoDTO {
     private String date;
     private boolean paid;
     private CategoriaEntity category;
-
-
-
-
-
-
 
 
 }

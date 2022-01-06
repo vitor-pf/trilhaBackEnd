@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import trilha.back.financys.dtos.CategoriaDTO;
@@ -35,27 +33,26 @@ public class CategoriaService {
 
 
 
-    public ResponseEntity<CategoriaDTO> create(CategoriaEntity body, BindingResult result){
+    public CategoriaDTO create(CategoriaEntity body, BindingResult result){
         if(idCategoryByName(body.getNameCategoria()) < 0 && (!result.hasErrors())){
-            return ResponseEntity.status(HttpStatus.OK).body(maptoEntity(categoriaRepository.save(body)));
+            return maptoEntity(categoriaRepository.save(body));
         }
-        return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
+        return null;
     }
 
-    public ResponseEntity<List<CategoriaDTO>> readAll(){
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(maptoListEntity(categoriaRepository.findAll()));
+    public List<CategoriaDTO> readAll(){
+        return maptoListEntity(categoriaRepository.findAll());
     }
 
-    public ResponseEntity<CategoriaDTO> readById(long id){
-        return ResponseEntity.status(HttpStatus.OK).body(maptoEntity(categoriaRepository.findById(id).get()));
+    public CategoriaDTO readById(long id){
+        return maptoEntity(categoriaRepository.findById(id).get());
     }
 
-    public ResponseEntity<CategoriaDTO> update(Long id, CategoriaEntity body){
-        if (Objects.equals(body.getId(), categoriaRepository.getById(id).getId()) ) {
-            return ResponseEntity.status(HttpStatus.OK).body(maptoEntity(categoriaRepository.save(body)));
+    public CategoriaDTO update(Long id, CategoriaEntity body){
+        if (Objects.equals(body.getId(), categoriaRepository.findById(id).get().getId()) ) {
+            return maptoEntity(categoriaRepository.save(body));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(maptoEntity(body));
+        return null;
     }
 
     public void delete(long id){
@@ -74,5 +71,4 @@ public class CategoriaService {
     private List<CategoriaDTO> maptoListEntity(List<CategoriaEntity> entity) {
         return (List<CategoriaDTO>) modelMapper.map(entity, new TypeToken<List<CategoriaDTO>>(){}.getType());
     }
-
 }
